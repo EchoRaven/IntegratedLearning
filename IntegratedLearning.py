@@ -46,7 +46,7 @@ class IntegratedLearning:
                 if pro >= self.DataWeightArray[pos]:
                     ResampleData.append(data[pos])
                     ResampleLabel.append(label[pos])
-                if len(ResampleData) == len(data) * 10:
+                if len(ResampleData) == len(data):
                     break
             learner.Train(data=ResampleData, label=ResampleLabel)
             #计算误差
@@ -126,5 +126,5 @@ if __name__ == "__main__":
               "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜"]
     il = IntegratedLearning()
     il.Train(LearnersNum=5, data=datas, label=labels, LearnerType=DecicisonTree)
-    print(il.Predict(["青绿", "蜷缩", "沉闷", "稍糊", "稍凹", "硬滑"]))
+    print(il.Predict(["青绿", "蜷缩", "沉闷", "稍糊", "稍凹", "软粘"]))
     print(il.Score(data=datas, label=labels))
