@@ -1,4 +1,5 @@
 import math
+import random
 
 from Tree import DecicisonTree
 from BNC import BNC
@@ -33,7 +34,21 @@ class IntegratedLearning:
             #构建学习器
             learner = LearnerType()
             #训练数据
-            learner.Train(data=data, label=label)
+            #重采样生成新的数据集
+            ResampleData = []
+            ResampleLabel = []
+            tot = 0
+            for i in range(len(self.DataWeightArray)):
+                tot += self.DataWeightArray[i]
+            while True:
+                pos = random.randint(0, len(data)-1)
+                pro = random.uniform(0, 1)
+                if pro >= self.DataWeightArray[pos]:
+                    ResampleData.append(data[pos])
+                    ResampleLabel.append(label[pos])
+                if len(ResampleData) == len(data) * 10:
+                    break
+            learner.Train(data=ResampleData, label=ResampleLabel)
             #计算误差
             #总量
             tot = 0
@@ -51,6 +66,7 @@ class IntegratedLearning:
             self.ComponentLearners.append(learner)
             self.LearnersNum += 1
             if diff == 0:
+                self.LearnerWeightArray.append(float('inf'))
                 break
             self.LearnerWeightArray.append(1 / 2 * math.log((1 - diff) / diff))
             tot = 0
@@ -70,7 +86,7 @@ class IntegratedLearning:
             predict = self.ComponentLearners[index].Predict(data)
             if predict not in res.keys():
                 res[predict] = 0
-            res[predict] += 1
+            res[predict] += self.LearnerWeightArray[index]
         totPredict = None
         num = 0
         for key in res.keys():
