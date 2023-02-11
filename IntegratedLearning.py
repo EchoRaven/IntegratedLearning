@@ -1,6 +1,6 @@
 import math
 
-
+from Tree import DecicisonTree
 from BNC import BNC
 class IntegratedLearning:
     def __init__(self):
@@ -33,7 +33,7 @@ class IntegratedLearning:
             #构建学习器
             learner = LearnerType()
             #训练数据
-            learner.Train(data, label)
+            learner.Train(data=data, label=label)
             #计算误差
             #总量
             tot = 0
@@ -47,10 +47,12 @@ class IntegratedLearning:
             diff /= tot
 
             if diff > 0.5:
-                self.LearnersNum += 1
                 break
-            self.LearnerWeightArray.append(1/2 * math.log((1-diff)/diff))
             self.ComponentLearners.append(learner)
+            self.LearnersNum += 1
+            if diff == 0:
+                break
+            self.LearnerWeightArray.append(1 / 2 * math.log((1 - diff) / diff))
             tot = 0
             for i in range(len(data)):
                 predict = self.Predict(data[i])
@@ -107,5 +109,6 @@ if __name__ == "__main__":
     labels = ["好瓜", "好瓜", "好瓜", "好瓜", "好瓜", "好瓜", "好瓜", "好瓜",
               "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜", "坏瓜"]
     il = IntegratedLearning()
-    il.Train(LearnersNum=10, data=datas, label=labels)
+    il.Train(LearnersNum=5, data=datas, label=labels, LearnerType=DecicisonTree)
+    print(il.Predict(["青绿", "蜷缩", "沉闷", "稍糊", "稍凹", "硬滑"]))
     print(il.Score(data=datas, label=labels))
